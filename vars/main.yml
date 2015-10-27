@@ -1,0 +1,5 @@
+---
+jython_ver : '2.5.3'
+jython_name : 'jython-{{ jython_ver }}'
+jython_installer_jar : 'jython-installer-{{ jython_ver }}.jar'
+jython_installer_url : 'http://search.maven.org/remotecontent?filepath=org/python/jython-installer/{{ jython_ver }}/{{ jython_installer_jar }}'

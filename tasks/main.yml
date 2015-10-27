@@ -1,0 +1,24 @@
+---
+- name: checking for jython install...
+  stat: path='/opt/{{ jython_name }}'
+  register: jython_stat
+  
+- name: downloading jython installer...
+  when: jython_stat.stat.isdir is not defined
+  environment: proxy_env
+  get_url: url='{{ jython_installer_url }}' dest='/tmp/{{ jython_installer_jar }}'
+
+- name: installing jython...
+  when: jython_stat.stat.isdir is not defined
+  shell: java -jar '/tmp/{{ jython_installer_jar }}' -s -d '/opt/{{ jython_name }}'
+
+- name: linking /opt/jython...
+  file: src='/opt/{{ jython_name }}' dest='/opt/jython' state=link
+
+- name: seed jython...
+  when: jython_stat.stat.isdir is not defined
+  shell: /opt/jython/bin/jython -c 'exit()'
+
+- name: include jython in the default path and set JYTHON_HOME, JYTHON_OPTS...
+  copy: src='etc/profile.d/jython.sh' dest='/etc/profile.d/jython.sh' mode=644
+  
