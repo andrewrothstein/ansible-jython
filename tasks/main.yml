@@ -1,4 +1,7 @@
 ---
+- name: Install andrewrothstein.bash
+  ansible.builtin.include_role:
+    name: andrewrothstein.bash
 - name: Install andrewrothstein.temurin
   ansible.builtin.include_role:
     name: andrewrothstein.temurin
@@ -23,7 +26,7 @@
     - name: Installing jython...
       become_user: root
       become: true
-      ansible.builtin.command: /bin/sh -lc 'java -jar "{{ jython_tmp_installer_jar }}" -s -d "{{ jython_install_dir }}"'
+      ansible.builtin.command: bash -lc 'java -jar "{{ jython_tmp_installer_jar }}" -s -d "{{ jython_install_dir }}"'
       args:
         creates: '{{ jython_exe }}'
       changed_when: false
