@@ -1,0 +1,14 @@
+---
+- name: Testing andrewrothstein.jython
+  hosts: all
+  tasks:
+    - name: Installing jython
+      ansible.builtin.include_role:
+        name: '{{ playbook_dir }}'
+    - name: Testing 'jython --version'
+      ansible.builtin.command: /usr/local/bin/jython --version
+      changed_when: false
+      register: jython_test_output
+    - name: Output of 'jython --version'
+      ansible.builtin.debug:
+        msg: '{{ jython_test_output.stderr }}'

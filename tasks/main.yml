@@ -1,24 +1,46 @@
 ---
-- name: checking for jython install...
-  stat: path='/opt/{{ jython_name }}'
-  register: jython_stat
-  
-- name: downloading jython installer...
-  when: jython_stat.stat.isdir is not defined
-  environment: proxy_env
-  get_url: url='{{ jython_installer_url }}' dest='/tmp/{{ jython_installer_jar }}'
-
-- name: installing jython...
-  when: jython_stat.stat.isdir is not defined
-  shell: java -jar '/tmp/{{ jython_installer_jar }}' -s -d '/opt/{{ jython_name }}'
-
-- name: linking /opt/jython...
-  file: src='/opt/{{ jython_name }}' dest='/opt/jython' state=link
-
-- name: seed jython...
-  when: jython_stat.stat.isdir is not defined
-  shell: /opt/jython/bin/jython -c 'exit()'
-
-- name: include jython in the default path and set JYTHON_HOME, JYTHON_OPTS...
-  copy: src='etc/profile.d/jython.sh' dest='/etc/profile.d/jython.sh' mode=644
-  
+- name: Install andrewrothstein.temurin
+  ansible.builtin.include_role:
+    name: andrewrothstein.temurin
+  vars:
+    openjdk_app: jdk
+- name: Checking for jython install in {{ jython_exe }}
+  become_user: root
+  become: true
+  ansible.builtin.stat:
+    path: '{{ jython_exe }}'
+  register: jython_binary
+- name: Downloading and installing jython
+  when: not jython_binary.stat.exists
+  block:
+    - name: Downloading jython installer...
+      become_user: root
+      become: true
+      ansible.builtin.get_url:
+        url: '{{ jython_installer_url }}'
+        dest: '{{ jython_tmp_installer_jar }}'
+        mode: '644'
+    - name: Installing jython...
+      become_user: root
+      become: true
+      ansible.builtin.command: /bin/sh -lc 'java -jar "{{ jython_tmp_installer_jar }}" -s -d "{{ jython_install_dir }}"'
+      args:
+        creates: '{{ jython_exe }}'
+      changed_when: false
+    - name: Seeding jython...
+      ansible.builtin.command: "{{ jython_exe }} -c 'exit()'"
+      changed_when: false
+  always:
+    - name: Rm -f {{ jython_tmp_installer_jar }}
+      become_user: root
+      become: true
+      ansible.builtin.file:
+        path: '{{ jython_tmp_installer_jar }}'
+        state: absent
+- name: Linking {{ jython_link }} to {{ jython_exe }}
+  become_user: root
+  become: true
+  ansible.builtin.file:
+    src: '{{ jython_exe }}'
+    dest: '{{ jython_link }}'
+    state: link

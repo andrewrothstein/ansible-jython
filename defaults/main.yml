@@ -1,0 +1,9 @@
+---
+jython_ver: 2.7.3
+jython_parent_install_dir: /usr/local
+jython_mirror: 'http://search.maven.org/remotecontent?filepath=org/python/jython-installer'
+jython_checksums:
+  # http://search.maven.org/remotecontent?filepath=org/python/jython-installer/2.5.3/jython-installer-2.5.3.jar
+  '2.5.3': sha256:05405966cdfa57abc8e705dd6aab92b8240097ce709fb916c8a0dbcaa491f99e
+  # http://search.maven.org/remotecontent?filepath=org/python/jython-installer/2.7.3/jython-installer-2.7.3.jar
+  '2.7.3': sha256:3ffc25c5257d2028b176912a4091fe048c45c7d98218e52d7ce3160a62fdc9fc
