@@ -31,7 +31,7 @@
         creates: '{{ jython_exe }}'
       changed_when: false
     - name: Seeding jython...
-      ansible.builtin.command: "{{ jython_exe }} -c 'exit()'"
+      ansible.builtin.command: bash -lc "{{ jython_exe }} -c 'exit()'"
       changed_when: false
   always:
     - name: Rm -f {{ jython_tmp_installer_jar }}
