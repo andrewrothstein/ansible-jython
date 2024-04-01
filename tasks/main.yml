@@ -6,7 +6,7 @@
   ansible.builtin.include_role:
     name: andrewrothstein.temurin
   vars:
-    openjdk_app: jdk
+    openjdk_app: jre
 - name: Checking for jython install in {{ jython_exe }}
   become_user: root
   become: true
